@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Link } from 'react-router-dom';
 
+import RestaurantContext from '../../context/restaurantContext';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -11,18 +12,20 @@ import CardHeader from '@material-ui/core/CardHeader';
 import useStyles from '../DisplayData/DisplayDataStyle';
 
 const SortingData = (props) => {
+  const context = useContext(RestaurantContext);
+  const { data } = context;
   const classes = useStyles();
 
   const [sortData, setSortData] = useState(null);
 
   useEffect(() => {
-    if(props.data){
-      let places = [...props.data];
+    if(data){
+      let places = [...data];
       places.sort((a, b) => b.review_count > a.review_count ? 1 : -1)
       // console.log(places)
       setSortData(places);
     }
-  }, [props.data])
+  }, [data])
 
   let sorted = null;
   if(sortData){

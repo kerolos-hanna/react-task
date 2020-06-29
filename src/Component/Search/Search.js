@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+
+import RestaurantContext from '../../context/restaurantContext';
 import Button from '@material-ui/core/Button';
 import { object, string } from 'yup';
 import TextField from '@material-ui/core/TextField';
@@ -14,8 +16,8 @@ const userSchema = object().shape({
   location: string().required('this field is required'),
 });
 
-const Search = (props) => {
-
+const Search = () => {
+  const context = useContext(RestaurantContext);
   const classes = useStyles();
 
   const { register, handleSubmit, errors } = useForm({
@@ -24,7 +26,7 @@ const Search = (props) => {
   });
 
   const onSubmit = (data) => {
-    props.clicked(data.wanted, data.location);
+    context.getData(data.wanted, data.location);
   };
 
   return (
@@ -44,6 +46,7 @@ const Search = (props) => {
               label="What you want"
               fullWidth
               name="wanted"
+              placeholder="Like: { coffee, breakfast_brunch....."
               autoComplete="wanted"
               error={!!errors.wanted}
               helperText={errors.wanted?.message}
@@ -59,6 +62,7 @@ const Search = (props) => {
               fullWidth
               type="text"
               id="location"
+              placeholder="Like: { california, san francisco...."
               autoComplete="current-location"
               error={!!errors.location}
               helperText={errors.location?.message}

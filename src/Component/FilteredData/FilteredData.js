@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+import RestaurantContext from '../../context/restaurantContext';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -11,19 +12,21 @@ import CardHeader from '@material-ui/core/CardHeader';
 import useStyles from '../DisplayData/DisplayDataStyle';
 
 const FilteredData = (props) => {
+  const context = useContext(RestaurantContext);
+  const { data } = context;
   const classes = useStyles();
 
   const [filter, setFilter] = useState(null);
 
   /*for filter data */
   useEffect(() => {
-    let prices = [...props.data];
+    let prices = [...data];
     let pricesData = prices.filter(res => {
       return (props.selectValue === res.price)
     })
     setFilter(pricesData);
-    console.log(pricesData)
-  }, [props.selectValue, props.data])
+    // console.log(pricesData)
+  }, [props.selectValue, data])
 
   let filtered = null;
   if(filter){
