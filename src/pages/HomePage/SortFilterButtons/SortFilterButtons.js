@@ -21,7 +21,7 @@ const Buttons = (props) => {
 
 	/*for dollar sign */
 	useEffect(() => {
-		if (data) {
+		if (data.length !== 0) {
 			let dollars = [...data];
 			let dollarsArray = dollars.map((res) => {
 				return res.price;

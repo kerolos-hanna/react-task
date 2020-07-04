@@ -12,6 +12,7 @@
 - [Yup](https://www.npmjs.com/package/yup)
 - [Axios](https://www.npmjs.com/package/axios)
 - [Context_API](https://reactjs.org/docs/context.html)
+- [React_Infinite_Scroll_Component](https://www.npmjs.com/package/react-infinite-scroll-component)
 
 ## Installation
 

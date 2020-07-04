@@ -11,17 +11,20 @@ import * as actionTypes from './types';
 const RestaurantState = (props) => {
 	const initialState = {
 		loading: false,
-		data: null,
+		data: [],
 		item: null,
+		error: false,
+		limit: 12,
+		isHasMore: true,
 	};
 	const [state, dispatch] = useReducer(RestaurantReducer, initialState);
 
 	//get data
-	const getData = (name, location) => {
+	const getData = (name, location, limit) => {
 		setLoading();
 		axios
 			.get(
-				`${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location}`,
+				`${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location}&limit=${limit}`,
 				{
 					headers: {
 						Authorization: `Bearer ${API_KEY}`,
@@ -33,8 +36,48 @@ const RestaurantState = (props) => {
 			)
 			.then((res) => {
 				dispatch({ type: actionTypes.GET_DATA, payload: res.data.businesses });
+				console.log(res);
 			})
 			.catch((err) => {
+				dispatch({ type: actionTypes.GET_ERROR });
+				console.log(err);
+			});
+	};
+
+	//has-more
+	const hasMore = (data, limit) => {
+		if (data >= 20) {
+			dispatch({ type: actionTypes.HAS_MORE });
+			return;
+		} else {
+			dispatch({ type: actionTypes.SET_LIMITATION });
+			dataScroll(state.name, state.location, state.limit);
+		}
+	};
+
+	//get scroll data
+	const dataScroll = (name, location, limit) => {
+		axios
+			.get(
+				`${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location}&limit=${limit}`,
+				{
+					headers: {
+						Authorization: `Bearer ${API_KEY}`,
+					},
+					params: {
+						categories: `${name}`,
+					},
+				}
+			)
+			.then((res) => {
+				dispatch({
+					type: actionTypes.SCROLL_DATA,
+					payload: res.data.businesses,
+				});
+				console.log(res);
+			})
+			.catch((err) => {
+				dispatch({ type: actionTypes.GET_ERROR });
 				console.log(err);
 			});
 	};
@@ -60,6 +103,7 @@ const RestaurantState = (props) => {
 				dispatch({ type: actionTypes.GET_ITEM, payload: res.data });
 			})
 			.catch((err) => {
+				dispatch({ type: actionTypes.GET_ERROR });
 				console.log(err);
 			});
 	};
@@ -70,8 +114,12 @@ const RestaurantState = (props) => {
 				loading: state.loading,
 				data: state.data,
 				item: state.item,
+				error: state.error,
+				limit: state.limit,
+				isHasMore: state.isHasMore,
 				getData,
 				getItem,
+				hasMore,
 			}}
 		>
 			{props.children}
